@@ -87,7 +87,7 @@ class ReminderHandler
         if time_to_add <= 0
             debug "Past reminder for #{target} \"#{text}\" triggered."
             @@remindersDB.where(Sequel[:remind_at] <= Time.now.to_i).delete
-            Target(target).send("[\x0309Reminder\x03] #{sender}: At #{Time.at(remind_at).strftime("%F %T")}, you asked me to remind you about: \"#{text}\". Sorry for being late!")
+            Target(target).send("[\x0309Reminder\x03] #{sender}: At #{Time.at(created_at).strftime("%F %T")}, you asked me to remind you about: \"#{text}\". Sorry for being late!")
         else
             reminder = Reminder.new(bot, target, sender, created_at, remind_at, text)
             
