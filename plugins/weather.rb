@@ -4,11 +4,19 @@ require 'json'
 class Weather
     include Cinch::Plugin
 
+    def self.setup_needed
+        true
+    end
+    
+    def self.apis
+        ["owm"]
+    end
+    
     match /weather (.+)/
 
     def weather(location)
-        if config[:owm_key]
-            uri = URI("http://api.openweathermap.org/data/2.5/weather?q=#{location}&units=metric&appid=#{config[:owm_key]}")
+        if bot.apis["owm"]
+            uri = URI("http://api.openweathermap.org/data/2.5/weather?q=#{location}&units=metric&appid=#{bot.apis["owm"]}")
             page = Net::HTTP.get(uri)
             weather = JSON.parse(page)
 

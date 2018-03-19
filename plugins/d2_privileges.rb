@@ -36,25 +36,49 @@ end
 class PrivilegesUp
     include Cinch::Plugin
     
+    def self.setup_needed
+        true
+    end
+    
+    def self.apis
+        ["d2k5"]
+    end
+    
     match "up"
     
     def execute(m)
-        set_priv(m, "+", config[:d2k5_key])
+        set_priv(m, "+", bot.apis["d2k5"])
     end
 end
 
 class PrivilegesDown
     include Cinch::Plugin
     
+    def self.setup_needed
+        true
+    end
+    
+    def self.apis
+        ["d2k5"]
+    end
+    
     match "down"
     
     def execute(m)
-        set_priv(m, "-", config[:d2k5_key])
+        set_priv(m, "-", bot.apis["d2k5"])
     end
 end
     
 class PrivilegesAuto
     include Cinch::Plugin
+    
+    def self.setup_needed
+        true
+    end
+    
+    def self.apis
+        ["d2k5"]
+    end
     
     listen_to :connect, method: :connect_handler
     listen_to :join, method: :join_handler
@@ -71,19 +95,19 @@ class PrivilegesAuto
     end
     
     def join_handler(m)
-        unless m.user.nick != bot.nick or config[:d2k5_key]
+        unless m.user.nick != bot.nick or bot.apis["d2k5"]
             if @@autoprivs.where(:channel_name => m.channel.name).count == 0
                 @@autoprivs.insert(:channel_name => m.channel.name, :toggle => true)
             end
             if @@autoprivs.where(:channel_name => m.channel.name).get(:toggle) == true
-                set_priv(m, "+", config[:d2k5_key])
+                set_priv(m, "+", bot.apis["d2k5"])
             end
         end
     end
     
     def execute(m, option)
-        unless config[:d2k5_key]
-            if ["a","o"].include? get_priv(m.user, config[:d2k5_key])
+        unless bot.apis["d2k5"]
+            if ["a","o"].include? get_priv(m.user, bot.apis["d2k5"])
                 if @@autoprivs.where(:channel_name => m.channel.name).get(:toggle) == true or @@autoprivs.where(:channel_name => m.channel.name).get(:toggle) == false  
                     @@autoprivs.where(:channel_name => m.channel.name).update(:toggle => option == "on")
                     m.reply "[\x0304D2K5\x03] People #{option == "on" ? 'will' : 'won\'t'} automatically be given privileges on join in this channel."

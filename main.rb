@@ -26,19 +26,28 @@ puts "\e[0m"
 
 Dir.glob("plugins/*.rb").each do |f|
     require_relative f
-    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [loader] Loaded: '#{f}'"
+    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [file loader] Loaded: '#{f}'"
 end
 
-module Main      
-    @@db = Sequel.sqlite "sparks.db"    
+module Main       
+    @@apis = {}
+    
+    def apis
+        @@apis
+    end
+
+    require_relative 'helpers/api_setup'
+    
+    module_function :apis
     
     configFile = File.read("config.yaml")
     config = YAML.load(configFile)
     
-    puts config
-    
     @@bot = Cinch::Bot.new do
         configure do |c|
+            setup_needed = []
+            plugin_list = []
+            
             c.server = config["address"]
             c.port = config["port"]
             c.ssl.use = config["ssl"]
@@ -50,30 +59,44 @@ module Main
             end
             c.channels = config["channels"]
             c.messages_per_second = 100000
-            c.plugins.plugins = config["plugins"].map { |plugin| 
-                plugin.constantize 
+            
+            config["plugins"].each { |plugin| 
+                plugin_obj = plugin.constantize
+                if defined? plugin_obj.setup_needed
+                    setup_needed.push plugin
+                else
+                    plugin_list << plugin_obj
+                    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Loaded Plugin: #{plugin}"
+                end
             }
             
-            [PrivilegesAuto, PrivilegesUp, PrivilegesDown].each { |plugin|
-                c.plugins.options[plugin] = {
-                    :d2k5_key => config["keys"]["d2k5_key"]
-                }
-            }
-            c.plugins.options[Weather] = {
-                :owm_key => config["keys"]["owm_key"]
-            }
-            c.plugins.options[URLHandler] = {
-                :yt_key => config["keys"]["yt_key"],
-                :twit_consumer_key => config["keys"]["twit_consumer_key"],
-                :twit_consumer_secret => config["keys"]["twit_consumer_secret"],
-                :gh_key => config["keys"]["gh_key"],
-                :gh_secret => config["keys"]["gh_secret"]
-            }
+            c.plugins.plugins = plugin_list
+            
+            if setup_needed.count > 0
+                loaded = Helpers.setup_apis(setup_needed, config)
+                if loaded.count > 0
+                    setup_needed.each do |plugin|
+                        plugin_obj = plugin.constantize
+                        if (plugin_obj.apis & loaded).count > 0
+                            c.plugins.plugins.push plugin.constantize
+                            puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Setup API and Loaded Plugin: #{plugin}"
+                        else
+                            puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Plugin #{plugin} not loaded due to no API keys."                        
+                        end
+                    end
+                end
+            end
         end
     end
+
+    @@db = Sequel.sqlite "sparks.db"
     
     def @@bot.db
         @@db
+    end
+    
+    def @@bot.apis
+        @@apis
     end
     
     @@bot.start
