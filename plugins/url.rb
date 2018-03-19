@@ -91,7 +91,7 @@ class URLHandler
                 if gist.description != ""
                     description = " - \"#{gist.description}\""
                 end
-                m.reply "[\x0302URL/Gists\x03] #{gist.owner.login})/#{gist.files.to_hash.values[0]["filename"]}#{description} - Last Update: #{gist.updated_at.to_time.strftime("%F %R")} - \"#{gist.files.to_hash.values[0]["content"]}\""
+                m.reply "[\x0302URL/Gists\x03] #{gist.owner.login}/#{gist.files.to_hash.values[0]["filename"]}#{description} - Last Update: #{gist.updated_at.to_time.strftime("%F %R")} - \"#{gist.files.to_hash.values[0]["content"]}\""
             end
         # github profiles
         elsif config[:gh_key] and config[:gh_secret] and url.match(%r{http(s)?:\/\/(www\.)?github\.com/([A-z 0-9 _ -]+\/?)}) do |match|
