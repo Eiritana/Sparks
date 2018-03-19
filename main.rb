@@ -27,6 +27,7 @@ puts "\e[0m"
 
 require_relative 'helpers/config'
 require_relative 'helpers/api_setup'
+require_relative 'helpers/backend'
 
 Dir.glob("plugins/*.rb").each do |f|
     require_relative f
@@ -88,10 +89,6 @@ module Main
     
     def @@bot.apis
         @@apis
-    end
-    
-    def config
-        @@config
     end
     
     @@bot.start

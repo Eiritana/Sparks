@@ -16,8 +16,8 @@ class Feeds
     end
     
     @@feeds = [
-        Feed.new("Post", "https://d2k5.com/feed/posts/xml"),
-        Feed.new("Thread", "https://d2k5.com/feed/threads/xml")
+        Feed.new("Post", "#{Helpers.get_config["settings"]["syndbb_url"]}/feed/posts/xml"),
+        Feed.new("Thread", "#{Helpers.get_config["settings"]["syndbb_url"]}/feed/threads/xml")
     ]
 
     @@last_update = Time.new.to_i

@@ -31,8 +31,8 @@ module Helpers
                     elsif api == "owm" and config["keys"]["owm_key"]
                         Main.apis["owm"] = config["keys"]["owm_key"]
                         loaded << api
-                    elsif api == "d2k5" and config["keys"]["d2k5_key"]
-                        Main.apis["d2k5"] = config["keys"]["d2k5_key"]
+                    elsif api == "syndbb" and config["keys"]["syndbb_key"]
+                        Main.apis["syndbb"] = config["keys"]["syndbb_key"]
                         loaded << api
                     elsif api == "title"
                         require 'mechanize'

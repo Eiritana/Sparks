@@ -23,9 +23,12 @@ plugins:
     - AutoPrivileges
     - Feeds
     - Help
+    
+settings:
+    syndbb_url: No
 
 keys:
-    d2k5_key: No
+    syndbb_key: No
     owm_key: No
     yt_key: No
     twit_consumer_key: No
