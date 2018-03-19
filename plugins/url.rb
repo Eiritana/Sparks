@@ -29,7 +29,7 @@ class URLHandler
             m.reply("[\x0302URL/YT\x03] \"#{video.title}\" by #{video.channel_title} from #{video.published_at.strftime("%F %R")} - #{video.length} - ▶#{video.view_count} \x0303⬆#{video.like_count} \x0304⬇#{video.dislike_count}\x03 💬#{video.comment_count}")
             end 
         # twitter profiles
-        elsif config[:twitter_consumer_key] and config[:twitter_consumer_secret] and url.match(%r{http(?:s)?:\/\/(?:www\.)?twitter.com\/([^ /?]+)(?:\/)?}) do |match|
+        elsif config[:twit_consumer_key] and config[:twit_consumer_secret] and url.match(%r{http(?:s)?:\/\/(?:www\.)?twitter.com\/([^ /?]+)(?:\/)?}) do |match|
             unless @@setup[:twit]
                 @@client = Twitter::REST::Client.new do |c|
                     c.consumer_key = config[:twit_consumer_key]
@@ -52,7 +52,7 @@ class URLHandler
             m.reply("[\x0302URL/Twitter\x03] #{user.name} (@#{user.screen_name})#{location}#{description} - 👥#{user.friends_count}/#{user.followers_count}")
             end
         # twitter posts
-        elsif config[:twitter_consumer_key] and config[:twitter_consumer_secret] and url.match(%r{https?://(?:www\.)?twitter.com/[^/]+/status/(\d+)}) do |match|
+        elsif config[:twit_consumer_key] and config[:twit_consumer_secret] and url.match(%r{https?://(?:www\.)?twitter.com/[^/]+/status/(\d+)}) do |match|
             unless @@setup[:twit]
                 @@client = Twitter::REST::Client.new do |c|
                     c.consumer_key = config[:twit_consumer_key]
