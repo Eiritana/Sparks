@@ -39,12 +39,12 @@ class Feeds
             
             posts.each do |request|
                 if @@last_update < request.xpath('pubDate').text.to_i
-                    feed.last_post = "[\x0304D2K5\x03] New #{feed.name}: #{request.xpath('title').text} - #{request.xpath('link').text}"
+                    feed.last_post = "[\x0304SynDBB\x03] New #{feed.name}: #{request.xpath('title').text} - #{request.xpath('link').text}"
                     Channel("#d2k5").send(feed.last_post)
                     @@last_update = Time.new.to_i
                 else
-                    if feed.last_post != "[\x0304D2K5\x03] New #{feed.name}: #{posts[-1].xpath('title').text} - #{posts[-1].xpath('link').text}"
-                        feed.last_post = "[\x0304D2K5\x03] New #{feed.name}: #{posts[-1].xpath('title').text} - #{posts[-1].xpath('link').text}"
+                    if feed.last_post != "[\x0304SynDBB\x03] New #{feed.name}: #{posts[-1].xpath('title').text} - #{posts[-1].xpath('link').text}"
+                        feed.last_post = "[\x0304SynDBB\x03] New #{feed.name}: #{posts[-1].xpath('title').text} - #{posts[-1].xpath('link').text}"
                         puts feed.last_post
                         break
                     end
