@@ -75,7 +75,7 @@ class URLHandler
             end
             repos = Github::Client::Repos.new
             repo = repos.get user: match[1], repo: match[2]
-            m.reply "[\x0302URL/GitHub\x03] #{repo.full_name} - \"#{repo.description}\" - Last Commit: #{repo.pushed_at.to_time.strftime("%F %R")} - ↻#{repo.forks_count} ⭐#{repo.stargazers_count} 👁️#{repo.watchers_count} - ⚠️#{repo.open_issues_count}"
+            m.reply "[\x0302URL/GitHub\x03] #{repo.full_name} - \"#{repo.description}\" - Last Commit: #{repo.pushed_at.to_time.strftime("%F %R")} - ↻#{repo.forks_count} ⭐#{repo.stargazers_count} - ⚠️#{repo.open_issues_count}"
             end
         # github gists
         elsif config[:gh_key] and config[:gh_secret] and url.match(%r{http(?:s)?:\/\/gist.github.com\/([^ /?]+)\/([^ /?]+)}) do |match|
