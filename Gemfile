@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 gem 'cinch'
+gem 'sequel'
 gem 'nokogiri'
 gem 'json'
 gem 'rufus-scheduler'
