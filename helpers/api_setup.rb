@@ -3,7 +3,7 @@ module Helpers
         loaded = []
         
         plugins.each do |plugin|
-            plugin.constantize.apis.each do |api|
+            Kernel.const_get(plugin).apis.each do |api|
                 unless loaded.include? api
                     if api == "twitter" and config["keys"]["twit_consumer_key"] and config["keys"]["twit_consumer_key"]
                         require 'twitter'
@@ -33,8 +33,9 @@ module Helpers
                     elsif api == "d2k5" and config["keys"]["d2k5_key"]
                         Main.apis["d2k5"] = config["keys"]["d2k5_key"]
                         loaded << api
-                    elsif api == "mekanize"
-                        Main.apis["mekanize"] = Mechanize.new
+                    elsif api == "mechanize"
+                        require 'mechanize'
+                        Main.apis["mechanize"] = Mechanize.new
                         loaded << api
                     elsif api == "load_anyway"
                         loaded << api

@@ -6,7 +6,7 @@ class URLHandler
     end
     
     def self.apis
-        ["twitter", "github", "yt", "mekanize"]
+        ["twitter", "github", "yt", "mechanize"]
     end
     
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false

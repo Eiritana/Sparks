@@ -12,6 +12,7 @@ an irc bot written by katrin / kiisuke using cinch
 
 require 'cinch'
 require 'sequel'
+require 'yaml'
 
 puts "\e[31m"
 puts "                      _"
@@ -35,7 +36,7 @@ module Main
     def apis
         @@apis
     end
-
+    
     require_relative 'helpers/api_setup'
     
     module_function :apis
@@ -61,7 +62,7 @@ module Main
             c.messages_per_second = 100000
             
             config["plugins"].each { |plugin| 
-                plugin_obj = plugin.constantize
+                plugin_obj = Kernel.const_get(plugin)
                 if defined? plugin_obj.setup_needed
                     setup_needed.push plugin
                 else
@@ -76,9 +77,9 @@ module Main
                 loaded = Helpers.setup_apis(setup_needed, config)
                 if loaded.count > 0
                     setup_needed.each do |plugin|
-                        plugin_obj = plugin.constantize
+                        plugin_obj = Kernel.const_get(plugin)
                         if (plugin_obj.apis & loaded).count > 0
-                            c.plugins.plugins.push plugin.constantize
+                            c.plugins.plugins.push plugin_obj
                             puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Setup API and Loaded Plugin: #{plugin}"
                         else
                             puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Plugin #{plugin} not loaded due to no API keys."                        
