@@ -8,6 +8,7 @@ module Helpers
                 rank_number = xml.xpath('api/entry/rank').text.to_i
                 
                 ranks = {
+                    999 => "a",
                     900 => "a",
                     500 => "o",
                     100 => "h",
@@ -35,6 +36,42 @@ module Helpers
             end
         end
         
-        module_function :get_priv, :set_priv
+        def get_profile(username, api_key)
+            uri = URI("#{Helpers.get_config["settings"]["syndbb_url"]}/api/irc/?nick=#{username}&get_profile=1&api=#{api_key}")
+            page = Net::HTTP.get(uri)
+            xml = Nokogiri::XML.parse(page)
+            base = xml.xpath('api/entry')
+    
+            ranks = {
+                999 => "!",
+                900 => "&",
+                500 => "@",
+                100 => "%",
+                50 => "+",
+                0 => "+"
+            }
+
+            gender_icons = {
+                "male" => "♂ ",
+                "female" => "♀ ",
+                "agender" => "⚲ "
+            }
+
+            if base
+                if base.xpath('gender').text != ""
+                    gender = " - #{gender_icons[base.xpath('gender').text.downcase]}#{base.xpath('gender').text}"
+                end
+                if base.xpath('location').text != ""
+                    location = " - #{base.xpath('location').text}"
+                end
+                if base.xpath('occupation').text != ""
+                    occupation = " - #{base.xpath('occupation').text}"
+                end
+
+                return "#{ranks[base.xpath('rank').text.to_i]}#{base.xpath('name').text} - #{Time.at(base.xpath('join_date').text.to_i).strftime("%F %R")} - Ð#{base.xpath('points').text}#{gender}#{location}#{occupation}"
+            end
+        end
+
+        module_function :get_priv, :set_priv, :get_profile
     end
 end

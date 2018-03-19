@@ -14,6 +14,7 @@ plugins:
     - Reminders
     - Privileges
     - AutoPrivileges
+    - Profiles
     - Feeds
     - Help
 
