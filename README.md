@@ -13,7 +13,7 @@ port: 6667
 ssl: No
 
 channels:
-    - #bottest
+    - "#bottest"
 
 plugins: 
     - Weather
