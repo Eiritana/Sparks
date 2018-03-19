@@ -36,6 +36,8 @@ module Helpers
                     elsif api == "mekanize"
                         Main.apis["mekanize"] = Mechanize.new
                         loaded << api
+                    elsif api == "load_anyway"
+                        loaded << api
                     end
                 end
             end
