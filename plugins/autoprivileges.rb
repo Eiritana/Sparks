@@ -43,13 +43,13 @@ class AutoPrivileges
             if ["a","o"].include? Helpers::Backend.get_priv(m.user, bot.apis["syndbb"])
                 if @@autoprivs.where(:channel_name => m.channel.name).get(:toggle) == true or @@autoprivs.where(:channel_name => m.channel.name).get(:toggle) == false  
                     @@autoprivs.where(:channel_name => m.channel.name).update(:toggle => option == "on")
-                    m.reply "[\x0304SynDBB\x03] People #{option == "on" ? 'will' : 'won\'t'} automatically be given privileges on join in this channel."
+                    m.reply "[\x0304#{Helpers.get_config["settings"]["syndbb_name"]}\x03] People #{option == "on" ? 'will' : 'won\'t'} automatically be given privileges on join in this channel."
                 else
                     @@autoprivs.insert(:channel_name => m.channel.name, :toggle => option == "on")
-                    m.reply "[\x0304SynDBB\x03] People #{option == "on" ? 'will' : 'won\'t'} automatically be given privileges on join in this channel."
+                    m.reply "[\x0304#{Helpers.get_config["settings"]["syndbb_name"]}\x03] People #{option == "on" ? 'will' : 'won\'t'} automatically be given privileges on join in this channel."
                 end
             else
-                m.reply "[\x0304SynDBB\x03] You are not permitted to use this command."
+                m.reply "[\x0304#{Helpers.get_config["settings"]["syndbb_name"]}\x03] You are not permitted to use this command."
             end
         else
             return

@@ -25,6 +25,7 @@ plugins:
     - Help
     
 settings:
+    syndbb_name: SynDBB
     syndbb_url: No
 
 keys:
