@@ -65,7 +65,7 @@ module Main
             c.plugins.options[URLHandler] = {
                 :yt_key => config["keys"]["yt_key"],
                 :twit_consumer_key => config["keys"]["twit_consumer_key"],
-                :twit_consumer_secret => config["keys"]["twit_consumer.secret"],
+                :twit_consumer_secret => config["keys"]["twit_consumer_secret"],
                 :gh_key => config["keys"]["gh_key"],
                 :gh_secret => config["keys"]["gh_secret"]
             }
