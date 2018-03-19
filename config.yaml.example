@@ -1,0 +1,27 @@
+nick: Sparks
+user: sparks
+real: Jodene Sparks
+address: localhost
+port: 6667
+ssl: No
+
+channels:
+    - #bottest
+
+plugins: 
+    - Weather
+    - URLHandler
+    - ReminderHandler
+    - PrivilegesUp
+    - PrivilegesDown
+    - PrivilegesAuto
+    - FeedReader
+
+keys:
+    d2k5_key: No
+    owm_key: No
+    yt_key: No
+    twit_consumer_key: No
+    twit_consumer_secret: No
+    gh_key: No
+    gh_secret: No
