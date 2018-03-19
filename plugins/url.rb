@@ -1,8 +1,3 @@
-require 'yt'
-require 'twitter'
-require 'github_api'
-require 'mechanize'
-
 class URLHandler
     include Cinch::Plugin
 
