@@ -11,6 +11,10 @@ class Weather
     def self.apis
         ["owm"]
     end
+
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}weather <location> - Gets weather information for <location> from OpenWeatherMap.
+    EOF
     
     match /weather (.+)/
 

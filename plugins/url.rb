@@ -1,4 +1,4 @@
-class URLHandler
+class URLs
     include Cinch::Plugin
 
     def self.setup_needed
@@ -6,11 +6,23 @@ class URLHandler
     end
     
     def self.apis
-        ["twitter", "github", "yt", "mechanize"]
+        ["twitter", "github", "yt", "title"]
     end
     
+    set :help, <<-EOF
+[\x0307Help\x03] URLs - Parses URLs and detects what service they are and uses an API to fetch data or just fetches the page title.
+    EOF
+    
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false
-
+    listen_to :connect, method: :setup_help
+    
+    def setup_help(m)
+        self.class.help = <<-EOF
+[\x0307Help\x03] URLs - Parses URLs and detects what service they are and uses an API to fetch data or just fetches the page title.
+[\x0307Help\x03] Services: #{(self.class.apis & Main.apis.keys).join(", ")}.
+        EOF
+    end
+    
     def execute(m, url)
         # youtube videos
         if bot.apis["yt"] and url.match(%r{(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([\w-]{10,})}) do |match|
@@ -57,7 +69,6 @@ class URLHandler
         # github profiles
         elsif bot.apis["github"] and url.match(%r{http(s)?:\/\/(www\.)?github\.com/([A-z 0-9 _ -]+\/?)}) do |match|
                 users = bot.apis["github"]::Client::Users.new
-                puts match[3]
                 user = users.get user: match[3]
                 
                 if user.location != ""
@@ -74,9 +85,9 @@ class URLHandler
                 m.reply "[\x0302URL/Github\x03] #{user.name} (#{user.login})#{location} #{bio} - 📁#{user.public_repos} 📚#{user.public_gists}"
             end
         # regular title grabber
-        elsif bot.apis["mekanize"]
+        elsif bot.apis["title"]
             uri  = URI.parse(url)
-            page = bot.apis["mekanize"].get(uri)
+            page = bot.apis["title"].get(uri)
             title = page.title.gsub(/[\x00-\x1f]*/, "").gsub(/[ ]{2,}/, " ").strip rescue nil
             m.reply "[\x0302URL\x03] %s (at %s)" % [ title, uri.host ] if title
         end

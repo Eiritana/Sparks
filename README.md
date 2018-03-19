@@ -17,12 +17,12 @@ channels:
 
 plugins: 
     - Weather
-    - URLHandler
-    - ReminderHandler
-    - PrivilegesUp
-    - PrivilegesDown
-    - PrivilegesAuto
-    - FeedReader
+    - URLs
+    - Reminders
+    - Privileges
+    - AutoPrivileges
+    - Feeds
+    - Help
 
 keys:
     d2k5_key: No

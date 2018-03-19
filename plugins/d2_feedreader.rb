@@ -1,7 +1,7 @@
 require 'net/http'
 require 'nokogiri'
 
-class FeedReader
+class Feeds
     include Cinch::Plugin
     
     class Feed
@@ -21,6 +21,10 @@ class FeedReader
     ]
 
     @@last_update = Time.new.to_i
+    
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}feed <feed> - Gets data from a feed. Feeds: #{@@feeds.map { |feed| feed.name }.join(", ")}.
+    EOF
     
     timer 300, method: :feed_reader
     match /feed (.+)/
@@ -55,10 +59,10 @@ class FeedReader
         
         
         if feed[0].last_post != ""
-            Channel("#d2k5").send(feed[0].last_post)
+            Target(m.target).send(feed[0].last_post)
         else
             feed_reader
-            Channel("#d2k5").send(feed[0].last_post)
+            Target(m.target).send(feed[0].last_post)
         end
     end
 end

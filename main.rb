@@ -25,43 +25,33 @@ puts ""
 puts "an irc bot written by katrin / kiisuke using cinch"
 puts "\e[0m"
 
+require_relative 'helpers/config'
+require_relative 'helpers/api_setup'
+
 Dir.glob("plugins/*.rb").each do |f|
     require_relative f
     puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [file loader] Loaded: '#{f}'"
 end
 
-module Main       
-    @@apis = {}
-    
-    def apis
-        @@apis
-    end
-    
-    require_relative 'helpers/api_setup'
-    
-    module_function :apis
-    
-    configFile = File.read("config.yaml")
-    config = YAML.load(configFile)
-    
+module Main    
     @@bot = Cinch::Bot.new do
         configure do |c|
             setup_needed = []
             plugin_list = []
             
-            c.server = config["address"]
-            c.port = config["port"]
-            c.ssl.use = config["ssl"]
-            c.nick = config["nick"]
-            c.user = config["user"]
-            c.realname = config["real"]
-            if config["password"]
-                c.password = config["password"]
+            c.server = @@config["address"]
+            c.port = @@config["port"]
+            c.ssl.use = @@config["ssl"]
+            c.nick = @@config["nick"]
+            c.user = @@config["user"]
+            c.realname = @@config["real"]
+            if @@config["password"]
+                c.password = @@config["password"]
             end
-            c.channels = config["channels"]
+            c.channels = @@config["channels"]
             c.messages_per_second = 100000
             
-            config["plugins"].each { |plugin| 
+            @@config["plugins"].each { |plugin| 
                 plugin_obj = Kernel.const_get(plugin)
                 if defined? plugin_obj.setup_needed
                     setup_needed.push plugin
@@ -74,7 +64,7 @@ module Main
             c.plugins.plugins = plugin_list
             
             if setup_needed.count > 0
-                loaded = Helpers.setup_apis(setup_needed, config)
+                loaded = Helpers.setup_apis(setup_needed)
                 if loaded.count > 0
                     setup_needed.each do |plugin|
                         plugin_obj = Kernel.const_get(plugin)
@@ -98,6 +88,10 @@ module Main
     
     def @@bot.apis
         @@apis
+    end
+    
+    def config
+        @@config
     end
     
     @@bot.start

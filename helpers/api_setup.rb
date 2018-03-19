@@ -1,5 +1,6 @@
 module Helpers
-    def setup_apis(plugins, config)
+    def setup_apis(plugins)
+        config = Helpers.get_config
         loaded = []
         
         plugins.each do |plugin|
@@ -33,9 +34,9 @@ module Helpers
                     elsif api == "d2k5" and config["keys"]["d2k5_key"]
                         Main.apis["d2k5"] = config["keys"]["d2k5_key"]
                         loaded << api
-                    elsif api == "mechanize"
+                    elsif api == "title"
                         require 'mechanize'
-                        Main.apis["mechanize"] = Mechanize.new
+                        Main.apis["title"] = Mechanize.new
                         loaded << api
                     elsif api == "load_anyway"
                         loaded << api
@@ -49,4 +50,14 @@ module Helpers
     end
     
     module_function :setup_apis
+end
+
+module Main
+    @@apis = {}
+    
+    def apis
+        @@apis
+    end
+
+    module_function :apis
 end

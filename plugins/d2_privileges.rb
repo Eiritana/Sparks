@@ -33,7 +33,7 @@ def set_priv(m, flag, api_key)
     end
 end
 
-class PrivilegesUp
+class Privileges
     include Cinch::Plugin
     
     def self.setup_needed
@@ -44,32 +44,24 @@ class PrivilegesUp
         ["d2k5"]
     end
     
-    match "up"
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}up - Sets your mode to your site rank equivalent.
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}down - Removes your site rank equivalent mode.
+    EOF
     
-    def execute(m)
+    match "up", :method => :up
+    match "down", :method => :down
+    
+    def up(m)
         set_priv(m, "+", bot.apis["d2k5"])
     end
-end
-
-class PrivilegesDown
-    include Cinch::Plugin
     
-    def self.setup_needed
-        true
-    end
-    
-    def self.apis
-        ["d2k5"]
-    end
-    
-    match "down"
-    
-    def execute(m)
+    def down(m)
         set_priv(m, "-", bot.apis["d2k5"])
     end
 end
-    
-class PrivilegesAuto
+
+class AutoPrivileges
     include Cinch::Plugin
     
     def self.setup_needed
@@ -79,6 +71,10 @@ class PrivilegesAuto
     def self.apis
         ["d2k5"]
     end
+    
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}autopriv <on|off> - Requires site operator or above. Toggles whether a channel has automatically set privileges.
+    EOF
     
     listen_to :connect, method: :connect_handler
     listen_to :join, method: :join_handler
