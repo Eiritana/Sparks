@@ -17,11 +17,16 @@ channels:
 
 plugins: 
     - Weather
-    - URLs
     - Reminders
     - Privileges
     - AutoPrivileges
+    - Profiles
     - Feeds
+    - URL::Title
+    - URL::GitHub
+    - URL::Twitter
+    - URL::YouTube
+    - Social::Twitter
     - Help
     
 settings:
