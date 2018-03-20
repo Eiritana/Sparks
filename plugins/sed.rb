@@ -25,17 +25,15 @@ class Sed
                 pair[0] = Regexp.new(pair[0], Regexp::IGNORECASE)
             end
 
-            if groups and groups.include? "g"
-                count = -1
-            else
-                count = 1
-            end
-
             new_phrase = false
             changed_line = nil
             corectee_history.reverse_each do |line|
                 puts line.msg
-                changed_line = line.msg.gsub(pair[0], pair[1])
+                if groups and groups.include? "g"
+                    changed_line = line.msg.gsub(pair[0], pair[1])
+                else
+                    changed_line = line.msg.sub(pair[0], pair[1])
+                end
                 if changed_line != line
                     puts changed_line
                     new_phrase = true
