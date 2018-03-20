@@ -26,6 +26,7 @@ puts "an irc bot written by katrin / kiisuke using cinch"
 puts "\e[0m"
 
 require_relative 'helpers/config'
+require_relative 'helpers/history'
 require_relative 'helpers/api_setup'
 require_relative 'helpers/backend'
 
