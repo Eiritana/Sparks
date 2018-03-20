@@ -1,4 +1,4 @@
-module Social
+module URL
     class GitHub
         include Cinch::Plugin
 
@@ -10,7 +10,11 @@ module Social
             ["github"]
         end
 
-        match %r{http(?:s)?:\/\/(?:(www|gist).)?github.com\/([^ /?]+)(?:\/)?([^ /?]+)?}, use_prefix: false, method: :github_url
+        def self.regex
+            %r{http(?:s)?:\/\/(?:(www|gist).)?github.com\/([^ /?]+)(?:\/)?([^ /?]+)?}
+        end
+
+        match self.regex, use_prefix: false, method: :github_url
 
         def github_url(m, subdomain, user_name, repo_name)
             if subdomain != "gist"

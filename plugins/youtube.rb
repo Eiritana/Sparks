@@ -1,4 +1,4 @@
-module Social
+module URL
     class YouTube
         include Cinch::Plugin
 
@@ -10,7 +10,11 @@ module Social
             ["yt"]
         end
 
-        match %r{http(?:s)?:\/\/(?:www.)?youtube.com\/(?:watch\?v=(.*)|channel\/(.*))}, use_prefix: false, method: :youtube_url
+        def self.regex
+            %r{http(?:s)?:\/\/(?:www.)?youtube.com\/(?:watch\?v=(.*)|channel\/(.*))}
+        end
+
+        match self.regex, use_prefix: false, method: :youtube_url
 
         def youtube_url(m, video_id, channel_id)
             if channel_id != nil    

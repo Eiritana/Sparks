@@ -1,4 +1,4 @@
-module Social
+module URL
     class Twitter
         include Cinch::Plugin
 
@@ -10,9 +10,11 @@ module Social
             ["twitter"]
         end
 
-        match %r{http(?:s)?:\/\/(?:www.)?twitter.com\/([^ ?/]+)(?:\/status\/(\d+))?}, use_prefix: false, method: :twitter_url
-        match /twitter @?(\w{1,15})/, method: :twitter_user
-        match /lt @?(\w{1,15})/, method: :last_tweet
+        def self.regex
+            %r{http(?:s)?:\/\/(?:www.)?twitter.com\/([^ ?/]+)(?:\/status\/(\d+))?}
+        end
+
+        match self.regex, use_prefix: false, method: :twitter_url
 
         def twitter_url(m, user_name, status_id)
             if status_id != nil
@@ -37,6 +39,23 @@ module Social
                 m.reply("[\x0311Twitter\x03] #{user.name} (@#{user.screen_name})#{location}#{description} - Following: #{user.friends_count} - Followers: #{user.followers_count}")
             end
         end
+    end
+end
+
+module Social
+    class Twitter
+        include Cinch::Plugin
+
+        def self.setup_needed
+            true
+        end
+        
+        def self.apis
+            ["twitter"]
+        end
+
+        match /twitter @?(\w{1,15})/, method: :twitter_user
+        match /lt @?(\w{1,15})/, method: :last_tweet
 
         def twitter_user(m, query)
             user = bot.apis["twitter"].user(query.downcase)
