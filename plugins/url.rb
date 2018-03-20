@@ -55,7 +55,7 @@ class URLs
         elsif bot.apis["github"] and url.match(%r{http(?:s)?:\/\/(?:www\.)?github.com\/([^ /?]+)\/([^ /?]+)}) do |match|
             repos = bot.apis["github"]::Client::Repos.new
             repo = repos.get user: match[1], repo: match[2]
-            m.reply "[\x0302URL/GitHub\x03] #{repo.full_name} - \"#{repo.description}\" - Last Commit: #{repo.pushed_at.to_time.strftime("%F %R")} - ↻#{repo.forks_count} ⭐#{repo.stargazers_count} - ⚠️#{repo.open_issues_count}"
+            m.reply "[\x0302URL/GitHub\x03] #{repo.full_name} - \"#{repo.description}\" - Last Commit: #{Time.parse(repo.pushed_at).strftime("%F %R")} - ↻#{repo.forks_count} ⭐#{repo.stargazers_count} - ⚠️#{repo.open_issues_count}"
             end
         # github gists
         elsif bot.apis["github"] and url.match(%r{http(?:s)?:\/\/gist.github.com\/([^ /?]+)\/([^ /?]+)}) do |match|
@@ -64,7 +64,7 @@ class URLs
                 if gist.description != ""
                     description = " - \"#{gist.description}\""
                 end
-                m.reply "[\x0302URL/Gists\x03] #{gist.owner.login}/#{gist.files.to_hash.values[0]["filename"]}#{description} - Last Update: #{gist.updated_at.to_time.strftime("%F %R")} - \"#{gist.files.to_hash.values[0]["content"]}\""
+                m.reply "[\x0302URL/Gists\x03] #{gist.owner.login}/#{gist.files.to_hash.values[0]["filename"]}#{description} - Last Update: #{Time.parse(gist.updated_at).strftime("%F %R")} - \"#{gist.files.to_hash.values[0]["content"]}\""
             end
         # github profiles
         elsif bot.apis["github"] and url.match(%r{http(s)?:\/\/(www\.)?github\.com/([A-z 0-9 _ -]+\/?)}) do |match|
