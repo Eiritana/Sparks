@@ -4,6 +4,10 @@ module URL
     class YouTubeAPI
         include Cinch::Plugin
 
+        def self.required_config
+            ["keys:yt_key"]
+        end
+
         def self.regex
             %r{http(?:s)?:\/\/(?:www.)?youtube.com\/(?:watch\?v=(.*)|channel\/(.*))}
         end

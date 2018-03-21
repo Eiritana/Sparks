@@ -1,14 +1,10 @@
 class AutoPrivileges
     include Cinch::Plugin
     
-    def self.setup_needed
-        true
+    def self.required_config
+        ["keys:syndbb_key", "settings:syndbb_url"]
     end
-    
-    def self.apis
-        ["syndbb"]
-    end
-    
+
     set :help, <<-EOF
 [\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}autopriv <on|off> - Requires site operator or above. Toggles whether a channel has automatically set privileges.
     EOF

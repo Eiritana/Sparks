@@ -4,6 +4,10 @@ module URL
     class GitHubAPI
         include Cinch::Plugin
 
+        def self.required_config
+            ["keys:gh_key", "keys:gh_secret"]
+        end
+
         def self.regex
             %r{http(?:s)?:\/\/(?:(www|gist).)?github.com\/([^ /?]+)(?:\/)?([^ /?]+)?(?:\/)?(?:(issues|pulls|commit)\/([^ ?\#\/]+))?}
         end

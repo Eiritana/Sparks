@@ -1,12 +1,8 @@
 class Privileges
     include Cinch::Plugin
     
-    def self.setup_needed
-        true
-    end
-    
-    def self.apis
-        ["syndbb"]
+    def self.required_config
+        ["keys:syndbb_key", "settings:syndbb_url"]
     end
     
     set :help, <<-EOF

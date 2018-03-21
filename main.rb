@@ -38,6 +38,8 @@ end
 module Main    
     @@bot = Cinch::Bot.new do
         configure do |c|         
+            do_not_load = []
+
             c.server = @@config["address"]
             c.port = @@config["port"]
             c.ssl.use = @@config["ssl"]
@@ -50,10 +52,27 @@ module Main
             c.channels = @@config["channels"]
             c.messages_per_second = 100000
             
-            @@config["plugins"].each { |plugin| 
+            @@config["plugins"].each { |plugin|
                 plugin_obj = Kernel.const_get(plugin)
-                c.plugins.plugins << plugin_obj
-                puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Loaded Plugin: #{plugin}"
+
+                if defined?(plugin_obj.required_config)
+                    plugin_obj.required_config.each do |item|
+                        if item.include? ":"
+                            prefix, suffix = item.split(":")
+                        end
+                        
+                        if @@config[prefix][suffix]
+                            do_not_load.push(plugin_obj.name)
+                        end
+                    end
+                end
+
+                if do_not_load.include? plugin_obj.name
+                    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Plugin \"#{plugin}\" not loaded due to missing config key."
+                else
+                    c.plugins.plugins << plugin_obj
+                    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Loaded Plugin: #{plugin}"
+                end
             }
         end
     end

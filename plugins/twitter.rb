@@ -4,6 +4,10 @@ module URL
     class TwitterAPI
         include Cinch::Plugin
 
+        def self.required_config
+            ["keys:twitter_key", "keys:twitter_secret"]
+        end
+
         def self.regex
             %r{http(?:s)?:\/\/(?:www.)?twitter.com\/([^ ?/]+)(?:\/status\/(\d+))?}
         end

@@ -4,6 +4,10 @@ require 'nokogiri'
 class Feeds
     include Cinch::Plugin
     
+    def self.required_config
+        ["settings:syndbb_url"]
+    end
+
     class Feed
         attr_reader :name, :url
         attr_accessor :last_post
