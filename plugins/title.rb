@@ -1,19 +1,20 @@
+require 'net/http'
+require 'mechanize'
+
 module URL
     class Title
         include Cinch::Plugin
-
-        def self.setup_needed
-            true
-        end
         
-        def self.apis
-            ["title"]
-        end
-        
-        listen_to :connect, method: :overrides_setup
         match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, use_prefix: false, method: :title_url
-    
-        def overrides_setup(m)
+        listen_to :connect, method: :setup
+
+        def setup(m)
+            unless Helpers.apis.apis.keys.include? "title"
+                api = Mechanize.new
+                Helpers.apis.setup_api "title", api
+            end
+
+            @@overides = []
             @@overrides = URL.constants.select{ |plugin| plugin.to_s != self.class.to_s.split("::")[1] }.map { |plugin|
                 Kernel.const_get("#{self.class.parent.to_s}::#{plugin.to_s}")
             }

@@ -37,10 +37,7 @@ end
 
 module Main    
     @@bot = Cinch::Bot.new do
-        configure do |c|
-            setup_needed = []
-            plugin_list = []
-            
+        configure do |c|         
             c.server = @@config["address"]
             c.port = @@config["port"]
             c.ssl.use = @@config["ssl"]
@@ -55,30 +52,9 @@ module Main
             
             @@config["plugins"].each { |plugin| 
                 plugin_obj = Kernel.const_get(plugin)
-                if defined? plugin_obj.setup_needed
-                    setup_needed.push plugin
-                else
-                    plugin_list << plugin_obj
-                    puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Loaded Plugin: #{plugin}"
-                end
+                c.plugins.plugins << plugin_obj
+                puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Loaded Plugin: #{plugin}"
             }
-            
-            c.plugins.plugins = plugin_list
-            
-            if setup_needed.count > 0
-                loaded = Helpers.setup_apis(setup_needed)
-                if loaded.count > 0
-                    setup_needed.each do |plugin|
-                        plugin_obj = Kernel.const_get(plugin)
-                        if (plugin_obj.apis & loaded).count > 0
-                            c.plugins.plugins.push plugin_obj
-                            puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Setup API and Loaded Plugin: #{plugin}"
-                        else
-                            puts "#{Time.now.strftime("[%Y/%m/%d %H:%M:%S.%L]")} \e[33m!!\e[0m [plugin loader] Plugin #{plugin} not loaded due to no API keys."                        
-                        end
-                    end
-                end
-            end
         end
     end
 
@@ -89,7 +65,7 @@ module Main
     end
     
     def @@bot.apis
-        @@apis
+        @@apis.apis
     end
     
     @@bot.start

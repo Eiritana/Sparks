@@ -4,19 +4,19 @@ require 'json'
 class Weather
     include Cinch::Plugin
 
-    def self.setup_needed
-        true
-    end
-    
-    def self.apis
-        ["owm"]
-    end
-
     set :help, <<-EOF
 [\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}weather <location> - Gets weather information for <location> from OpenWeatherMap.
     EOF
     
     match /weather (.+)/
+
+    listen_to :connect, method: :setup
+
+    def setup(m)
+        unless Helpers.apis.apis.keys.include? "github"
+            Helpers.apis.setup_api "orm", Helpers.get_config["keys"]["owm_key"]
+        end
+    end
 
     def weather(location)
         if bot.apis["owm"]

@@ -1,20 +1,25 @@
-module URL
-    class Twitter
-        include Cinch::Plugin
+require 'twitter'
 
-        def self.setup_needed
-            true
-        end
-        
-        def self.apis
-            ["twitter"]
-        end
+module URL
+    class TwitterAPI
+        include Cinch::Plugin
 
         def self.regex
             %r{http(?:s)?:\/\/(?:www.)?twitter.com\/([^ ?/]+)(?:\/status\/(\d+))?}
         end
 
         match self.regex, use_prefix: false, method: :twitter_url
+        listen_to :connect, method: :setup
+
+        def setup(m)
+            unless Helpers.apis.apis.keys.include? "twitter"
+                api = Twitter::REST::Client.new do |c|
+                    c.consumer_key = Helpers.get_config["keys"]["twit_consumer_key"]
+                    c.consumer_secret = Helpers.get_config["keys"]["twit_consumer_secret"]
+                end
+                Helpers.apis.setup_api "twitter", api
+            end
+        end
 
         def twitter_url(m, user_name, status_id)
             if status_id != nil
@@ -38,49 +43,6 @@ module URL
                 end
                 m.reply("[\x0311Twitter\x03] #{user.name} (@#{user.screen_name})#{location}#{description} - Following: #{user.friends_count} - Followers: #{user.followers_count}")
             end
-        end
-    end
-end
-
-module Social
-    class Twitter
-        include Cinch::Plugin
-
-        def self.setup_needed
-            true
-        end
-        
-        def self.apis
-            ["twitter"]
-        end
-
-        match /twitter @?(\w{1,15})/, method: :twitter_user
-        match /lt @?(\w{1,15})/, method: :last_tweet
-
-        def twitter_user(m, query)
-            user = bot.apis["twitter"].user(query.downcase)
-
-            if user != nil
-                if user.location.count > 0
-                    location = " - Location: #{user.location}"
-                else
-                    location = ""
-                end
-                if user.description.count > 0
-                    description = " - \"#{user.description.gsub(/\R+/, ' ')}\""
-                else
-                    description = ""
-                end
-                m.reply("[\x0311Twitter\x03] #{user.name} (@#{user.screen_name})#{location}#{description} - Following: #{user.friends_count} - Followers: #{user.followers_count} - https://twitter.com/#{query}")
-            end
-        end
-
-        def last_tweet(m, query)
-            status = bot.apis["twitter"].user_timeline(query.downcase, count: 1).first
-
-            text = status.text.gsub("\n", " ")
-
-            m.reply("[\x0311Twitter\x03] \"#{text}\" by #{status.user.name} (@#{status.user.screen_name}) from #{status.created_at.strftime("%F %R")} - RTs: #{status.retweet_count} - Favourites: #{status.favorite_count}")
         end
     end
 end
