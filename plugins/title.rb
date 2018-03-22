@@ -5,6 +5,10 @@ module URL
     class Title
         include Cinch::Plugin
         
+        set :help, <<-EOF
+[\x0307Help\x03] Title - Handles URLs and parses titles for them if no other URL parser plugin does.
+        EOF
+
         match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, use_prefix: false, method: :title_url
         listen_to :connect, method: :setup
 

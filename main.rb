@@ -60,8 +60,8 @@ module Main
                         if item.include? ":"
                             prefix, suffix = item.split(":")
                         end
-                        
-                        if @@config[prefix][suffix]
+
+                        if @@config[prefix][suffix] == false
                             do_not_load.push(plugin_obj.name)
                         end
                     end

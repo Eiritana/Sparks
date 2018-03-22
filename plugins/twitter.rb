@@ -12,6 +12,10 @@ module URL
             %r{http(?:s)?:\/\/(?:www.)?twitter.com\/([^ ?/]+)(?:\/status\/(\d+))?}
         end
 
+        set :help, <<-EOF
+[\x0307Help\x03] Twitter - This module supports URL parsing for statuses and users.
+        EOF
+
         match self.regex, use_prefix: false, method: :twitter_url
         listen_to :connect, method: :setup
 

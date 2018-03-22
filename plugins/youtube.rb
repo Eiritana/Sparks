@@ -12,6 +12,10 @@ module URL
             %r{http(?:s)?:\/\/(?:www.)?youtube.com\/(?:watch\?v=(.*)|channel\/(.*))}
         end
 
+        set :help, <<-EOF
+[\x0307Help\x03] YouTube - This module supports URL parsing for videos and channels.
+        EOF
+
         match self.regex, use_prefix: false, method: :youtube_url
         listen_to :connect, method: :setup
 

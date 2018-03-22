@@ -23,10 +23,9 @@ plugins:
     - Profiles
     - Feeds
     - URL::Title
-    - URL::GitHub
-    - URL::Twitter
-    - URL::YouTube
-    - Social::Twitter
+    - URL::GitHubAPI
+    - URL::TwitterAPI
+    - URL::YouTubeAPI
     - Help
     
 settings:
@@ -37,8 +36,8 @@ keys:
     syndbb_key: No
     owm_key: No
     yt_key: No
-    twit_consumer_key: No
-    twit_consumer_secret: No
+    twitter_key: No
+    twitter_secret: No
     gh_key: No
     gh_secret: No
 ```
