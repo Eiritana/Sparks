@@ -18,7 +18,7 @@ class Weather
 
     def setup(m)
         unless Helpers.apis.apis.keys.include? "github"
-            Helpers.apis.setup_api "orm", Helpers.get_config["keys"]["owm_key"]
+            Helpers.apis.setup_api "owm", Helpers.get_config["keys"]["owm_key"]
         end
     end
 
