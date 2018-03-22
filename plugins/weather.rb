@@ -4,11 +4,27 @@ require 'json'
 class Weather
     include Cinch::Plugin
 
+    def self.required_config
+        ["keys:owm_key"]
+    end
+
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}weather <location> - Gets weather information for <location> from OpenWeatherMap.
+    EOF
+    
     match /weather (.+)/
 
+    listen_to :connect, method: :setup
+
+    def setup(m)
+        unless Helpers.apis.apis.keys.include? "github"
+            Helpers.apis.setup_api "owm", Helpers.get_config["keys"]["owm_key"]
+        end
+    end
+
     def weather(location)
-        if config[:owm_key]
-            uri = URI("http://api.openweathermap.org/data/2.5/weather?q=#{location}&units=metric&appid=#{config[:owm_key]}")
+        if bot.apis["owm"]
+            uri = URI("http://api.openweathermap.org/data/2.5/weather?q=#{location}&units=metric&appid=#{bot.apis["owm"]}")
             page = Net::HTTP.get(uri)
             weather = JSON.parse(page)
 

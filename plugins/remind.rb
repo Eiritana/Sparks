@@ -16,7 +16,7 @@ class Reminder
     end
 end
 
-class ReminderHandler
+class Reminders
     include Cinch::Plugin
     include Cinch::Helpers
     
@@ -28,6 +28,10 @@ class ReminderHandler
     Second_reg = /seconds?|secs?|s/
     Time_unit_reg = Regexp.union(Day_reg, Hour_reg, Week_reg, Year_reg, Minute_reg, Second_reg)
 
+    set :help, <<-EOF
+[\x0307Help\x03] #{Helpers.get_config.key?("prefix") ? Config.config["prefix"] : "!"}in <time> <text> - Sets a reminder <time> from now. Example: \"!in 5m 4s hello\".
+    EOF
+    
     match /in ((?:\d+[\s]?\w+\s?)+) (.*)/
     listen_to :connect, method: :load_reminders
     
@@ -54,7 +58,6 @@ class ReminderHandler
         
         if remindersList != nil
             remindersList.each { |reminder|
-                puts reminder
                 add_reminder(bot, reminder[:target].to_s, reminder[:sender].to_s, reminder[:created_at], reminder[:remind_at], reminder[:text], true)
             }
         end
@@ -98,13 +101,10 @@ class ReminderHandler
             debug "Reminder for #{target} \"#{text}\" created."
             @@reminders << reminder
             @@scheduler.in "#{time_to_add}s" do
-                puts time_to_add
                 debug "Reminder for #{target} \"#{text}\" triggered."
                 
                 @@reminders.each { |reminder|
-                    puts "hi"
                     if reminder.remind_at <= Time.now.to_i 
-                        puts "hi"
                         Target(target).send("[\x0309Reminder\x03] #{reminder.sender}: At #{Time.at(reminder.remind_at).strftime("%F %T")}, you asked me to remind you about: \"#{reminder.text}\"")
                         @@remindersDB.where(Sequel[:remind_at] <= Time.now.to_i).delete
                         @@reminders.delete(reminder)

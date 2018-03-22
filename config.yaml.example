@@ -10,18 +10,26 @@ channels:
 
 plugins: 
     - Weather
-    - URLHandler
-    - ReminderHandler
-    - PrivilegesUp
-    - PrivilegesDown
-    - PrivilegesAuto
-    - FeedReader
+    - Reminders
+    - Privileges
+    - AutoPrivileges
+    - Profiles
+    - Feeds
+    - URL::Title
+    - URL::GitHubAPI
+    - URL::TwitterAPI
+    - URL::YouTubeAPI
+    - Help
 
+settings:
+    syndbb_name: SynDBB
+    syndbb_url: No
+    
 keys:
-    d2k5_key: No
+    syndbb_key: No
     owm_key: No
     yt_key: No
-    twit_consumer_key: No
-    twit_consumer_secret: No
+    twitter_key: No
+    twitter_secret: No
     gh_key: No
     gh_secret: No

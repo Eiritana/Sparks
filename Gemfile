@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 gem 'cinch'
+gem 'sqlite3'
 gem 'sequel'
 gem 'nokogiri'
 gem 'json'
